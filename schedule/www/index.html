@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class = "with-statusbar-overlay">
+   <head>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1, 
+         maximum-scale = 1, minimum-scale = 1, user-scalable = no, minimal-ui" />
+      <meta name = "apple-mobile-web-app-capable" content = "yes" />
+      <meta name = "apple-mobile-web-app-status-bar-style" content = "black" />
+      <title>Scheduler</title>
+      <link rel = "stylesheet" 
+         href = "https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/css/framework7.ios.min.css" />
+      <link rel = "stylesheet" 
+         href = "https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/css/framework7.ios.colors.min.css" />
+      <link rel = "stylesheet" 
+         href = "custom.css" />
+   </head>
+
+   <body>
+      <div class = "views">
+         <div class = "view view-main">
+            <div class = "pages">
+               <div data-page = "home" class = "page navbar-fixed">
+                  
+                  <div class = "navbar">
+                     <div class = "navbar-inner">
+                        <div class = "left"> </div>
+                        <div class = "center">Scheduler</div>
+                        <div class = "right"> </div>
+                     </div>
+                  </div>
+                  
+                  <div class = "page-content">
+                     <div class = "content-block-title">Default calendar setup</div>
+                     
+                     <div class = "list-block">
+                        <ul>
+                           <li>
+                              <div class = "item-content">
+                                 <div class = "item-inner">
+                                    <div class = "item-input">
+                                       <input type = "text" placeholder = "Select a date" 
+                                          readonly id = "calendar-default" />
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                     
+                     <div class = "content-block-title">Custom date format calendar</div>
+                     <div class = "list-block">
+                        <ul>
+                           <li>
+                              <div class = "item-content">
+                                 <div class = "item-inner">
+                                    <div class = "item-input">
+                                       <input type = "text" placeholder = "Select a date" 
+                                          readonly id = "calendar-date-format" />
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                     
+                     <div class = "content-block-title">Multiple values calendar</div>
+                     <div class = "list-block">
+                        <ul>
+                           <li>
+                              <div class = "item-content">
+                                 <div class = "item-inner">
+                                    <div class = "item-input">
+                                       <input type = "text" placeholder = "Select multiple dates" 
+                                          readonly id = "calendar-multiple" />
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                     
+                     <div class="content-block-title">Event</div>
+<div class="list-block">
+  <ul>
+    <li>
+      <div class="item-content">
+        <div class="item-inner">
+          <div class="item-input">
+            <input type="text" placeholder="Your Schedule" readonly id="picker-device">
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div> 
+
+                    <div class="content-block-title">Inline Picker / Date-time</div>
+<div class="content-block">
+ <div style="padding:0; margin-right:-15px; width:auto" class="content-block-inner">
+   <div style="margin:0" class="list-block">
+     <ul style="border-top:none">
+       <li>
+         <div class="item-content">
+           <div class="item-inner">
+             <div class="item-input">
+               <input type="text" placeholder="Date Time" readonly id="picker-date">
+             </div>
+           </div>
+         </div>
+       </li>
+     </ul>
+   </div>
+   <div id="picker-date-container"></div>
+ </div>
+</div>
+                    
+                     
+                    <div class="page-content">
+  <div class="content-block">
+    <p><a href="#" class="button notification-default">Save</a></p>
+
+      
+      <script type = "text/javascript" 
+         src = "https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/js/framework7.min.js"></script>
+         
+      <script>
+         var myApp = new Framework7();
+
+         // Default Calendar
+         var calendarDefault = myApp.calendar ({
+            input: '#calendar-default',
+         });
+         
+         // With custom date format
+         var calendarDateFormat = myApp.calendar({
+            input: '#calendar-date-format',
+            dateFormat: 'DD, dd MM, yyyy'
+         });
+         
+         // With multiple values
+         var calendarMultiple = myApp.calendar ({
+            input: '#calendar-multiple',
+            dateFormat: ' DD dd M yyyy',
+            multiple: true
+         });
+
+         //event
+         var pickerDevice = myApp.picker({
+    input: '#picker-device',
+    cols: [
+        {
+            textAlign: 'center',
+            values: ['Meeting', 'Birthday', 'Mass', 'Exam', 'Date', 'Shopping', 'Family Day', 'School Day', 'Seminar', 'Anniversary', 'Monthdary', 'Others']
+        }
+    ]
+});
+         //inline Date-Time
+         var today = new Date();
+ 
+var pickerInline = myApp.picker({
+    input: '#picker-date',
+    container: '#picker-date-container',
+    toolbar: false,
+    rotateEffect: true,
+ 
+    value: [today.getMonth(), today.getDate(), today.getFullYear(), today.getHours(), (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())],
+ 
+    onChange: function (picker, values, displayValues) {
+        var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+        if (values[1] > daysInMonth) {
+            picker.cols[1].setValue(daysInMonth);
+        }
+    },
+ 
+    formatValue: function (p, values, displayValues) {
+        return displayValues[0] + ' ' + values[1] + ', ' + values[2] + ' ' + values[3] + ':' + values[4];
+    },
+ 
+    cols: [
+        // Months
+        {
+            values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
+            displayValues: ('January February March April May June July August September October November December').split(' '),
+            textAlign: 'left'
+        },
+        // Days
+        {
+            values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+        },
+        // Years
+        {
+            values: (function () {
+                var arr = [];
+                for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+                return arr;
+            })(),
+        },
+        // Space divider
+        {
+            divider: true,
+            content: '  '
+        },
+        // Hours
+        {
+            values: (function () {
+                var arr = [];
+                for (var i = 0; i <= 23; i++) { arr.push(i); }
+                return arr;
+            })(),
+        },
+        // Divider
+        {
+            divider: true,
+            content: ':'
+        },
+        // Minutes
+        {
+            values: (function () {
+                var arr = [];
+                for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                return arr;
+            })(),
+        }
+    ]
+})
+    
+      var myApp = new Framework7(); 
+var mainView = myApp.addView('.view-main');
+ 
+var $$ = Dom7;
+ 
+$$('.notification-default').on('click', function () {
+    myApp.addNotification({
+        title: 'Scheduler',
+        message: 'Saved'
+    });
+});
+         
+         
+      </script>
+   </body>
+
+</html>
